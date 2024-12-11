@@ -1,0 +1,19 @@
+<header class="container-fluid header text-white d-flex justify-content-between align-items-center mb-1 position-sticky" style="min-width: 300px; top: 0; z-index: 3000" id="header">
+  <div class="logo mx-2" style="min-width:3rem;">
+    <a href="/home"><img src="/images/cow-img.png" alt="cow-img" fetchpriority="high"></a>
+  </div>
+  <div class="d-flex bg-white rounded align-items-center mx-3 gap-2 px-2 justify-content-around" style="height: 45px; width: 300px;" id="input-group"> 
+    <input list="customer-names" type="text" id="search-input" class="bg-transparent" placeholder="Search customer ...." style="font-weight: 501; outline: none; border: none; z-index: 1000;">
+    <datalist id="customer-names"></datalist>
+    <i class="fa-solid fa-magnifying-glass text-dark p-2" style="z-index: 1000;" id="search-icon"></i>
+  </div>
+  <nav class="navbar navbar-expand-lg navbar-dark position-relative">
+    <button class="navbar-toggler" type="button"  id="toggler" style="width: 3rem; height: 2.2rem; z-index: 10 "><i class="fas fa-bars" id="bars" style="z-index: -1; position: relative;"></i></button>
+    <div class="d-none flex-column d-lg-flex  flex-lg-row " id="toggle-menu" style="z-index: 2000;">
+      <a href="/home" class="m-2 me-lg-3"><i class="fas fa-home me-1"></i>Home</a>
+      <a href="/about" class="m-2 me-lg-3"><i class="fas fa-laugh me-1"></i>About</a>
+      <a href="/api/v1/records/download" class="m-2 me-lg-3" id="download"><i class="fas fa-download me-1"></i>Download</a>
+      <a href="" class="m-2 me-lg-3" id="logout"><i class="fas fa-sign-out-alt me-1"></i>Logout </a>
+    </div>
+  </nav>
+</header>

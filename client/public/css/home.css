@@ -1,0 +1,36 @@
+
+.c-w-f-hp-card {
+  width: 100%;
+}
+
+
+@media screen and (min-width: 600px) and (max-width: 800px) {
+  .c-w-f-hp-card {
+    max-width: 500px;
+    margin: 0 auto !important;
+  }
+}
+
+
+@media screen and (min-width: 800px) and (max-width: 900px) {
+  .c-w-f-hp-card {
+    max-width: 300px;
+    margin: 0 !important;
+  }
+
+  #card-container {
+    width: 640px !important;
+  }
+}
+
+
+@media screen and (min-width: 901px) {
+  .c-w-f-hp-card {
+    max-width: 300px;
+    margin: 0 !important;
+  }
+
+  #card-container {
+    width: 950px !important;
+  }
+}

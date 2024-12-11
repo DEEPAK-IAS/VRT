@@ -1,0 +1,111 @@
+.outline-none {
+  outline: none !important;
+}
+
+.border-none {
+  border: none !important;
+}   
+
+/* custom font size for show record page heading */
+.c-fs-f-srp-h {
+  font-size: 20px;
+}
+
+/* custom font size for show record page paragraph */
+.c-fs-f-srp-p {
+  font-size: 17px !important;
+}
+
+/* custom font size for show record page table */
+.c-fs-f-srp-t {
+  font-size: 13px;
+}
+
+/* custom heigh for show record page table hight */
+.c-max-h-f-srp-t {
+  min-height: 300px;
+  max-height: 300px;
+}
+
+/* custom font size for show record page buttons */
+.c-fs-f-srp-b {
+  font-size: 13px;
+}
+
+.cursor-pointer {
+  cursor:  pointer !important;
+}
+
+.btn-hover-success:hover {
+  background-color: #198754 !important;
+  color: white !important;
+}
+
+.btn-hover-danger:hover {
+  background-color: #dc3545 !important;
+  color: white !important;
+}
+
+.c-fs-f-console {
+  font-size: 10px;
+}
+
+@media  screen and (min-width: 500px) {
+  .c-fs-f-srp-h {
+    font-size: x-large;
+  }
+
+  .c-fs-f-srp-p {
+    font-size: 20px !important;
+  }
+
+  .c-max-h-f-srp-t {
+    max-height: 350px !important;
+  }
+}
+
+@media screen and (min-width: 560px) {
+  .c-fs-f-srp-t {
+    font-size: 20px;
+  }
+
+  .c-fs-f-console {
+    font-size: 13px;
+  }
+}
+
+@media screen and (max-width: 401px) {
+  .c-fs-f-err-message {
+    font-size: 12px !important;
+  }
+}
+
+@media screen and (min-width: 370px) {
+  .c-fs-f-srp-b {
+    font-size: 15px;
+  }
+}
+
+
+@media screen and (max-width: 301px) {
+  .c-fs-f-err-message {
+    font-size: 10px !important;
+  }
+}
+
+@media screen and (max-width: 313px) {
+  .c-fs-f-err-message {
+    font-size: 10px !important;
+  }
+
+  .c-w-f-srp-b {
+    width: 100% !important;
+  }
+}
+
+@media screen and (max-width: 349px) {
+  .c-d-none {
+    display: none;
+  }
+}
+

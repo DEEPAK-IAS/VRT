@@ -1,0 +1,4 @@
+{
+  "watch": ["*.ts", "*.js", "*.html", "*.css"],
+  "ext": "ts, js, html, css"
+}

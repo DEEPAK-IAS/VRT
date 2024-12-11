@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="/css/global.css">
+  <link rel="stylesheet" href="/css/header.component.css">
+  <script src="/js/header.component.js" type="module"></script>
+</head>
+<body>
+  {{HEADER}}
+
+  <div id="alert-box" class="alert alert-danger d-none fw-bold fs-6" role="alert"></div>
+
+  <div id="spinner" class="d-flex d-none align-items-center justify-content-center gap-3 mx-auto position-absolute top-50 start-50 translate-middle">
+    <p class="fw-bold fs-5 m-0">Loading</p>
+    <div class="spinner-border text-primary" role="status"></div>
+  </div>  
+
+  <!-- Custom popup menu -->
+  <div id="popup-menu" class="d-flex p-2 gap-2 flex-column position-absolute rounded border bg-white d-none c-fs-f-srp-p" style="min-width: 100px; z-index: 5000;">
+    <p class="m-0 ps-2 text-success cursor-pointer" data-bs-toggle="modal" data-bs-target="#create-inject-info-and-ai-date-modal">Add</p>
+    <p class="m-0 ps-2 text-success cursor-pointer" data-bs-toggle="modal" data-bs-target="#update-inject-info-and-ai-date-modal">Edit</p>
+    <p class="m-0 ps-2 text-danger cursor-pointer" data-bs-toggle="modal" data-bs-target="#delete-inject-info-and-ai-date-modal">Delete</p>
+  </div>
+
+  <main id="main-container" class="mx-3 mt-4 d-none">
+    <div class="shadow border rounded mx-auto p-1 position-relative" style="min-height: 500px; max-width: 1000px;">
+      <h4 class="mt-2 ms-2 mb-0 c-fs-f-srp-h">Customer Details</h4>
+
+      <div class="d-flex flex-wrap gap-2 gap-lg-3 p-2 overflow-auto">
+        <p class="fs-5 m-0 me-2 c-fs-f-srp-p"><i class="fa-solid fa-user text-primary"></i> <span id="user-name"></span></p>
+        <p class="fs-5 m-0 me-2 c-fs-f-srp-p"><i class="fa-solid fa-phone text-primary"></i> <span id="phone-number"></span></p>
+        <p class="fs-5 m-0 me-2 c-fs-f-srp-p"><i class="fa-solid fa-location-dot text-primary"></i> <span id="address"></span></p>
+        <p class="fs-5 m-0 me-2 c-fs-f-srp-p">Total Pending Amount: <i class="ms-1 fa-sharp fa-solid text-success fa-indian-rupee-sign"></i> <span id="total-pending-amount" class="text-success fw-bold"></span></p>
+      </div>
+      <hr class="m-0 border border-1 border-dark">
+
+      <div id="cow-img-container" class="position-absolute d-none start-50 translate-middle d-flex flex-column justify-content-center align-items-center" style="max-width: 200px; max-height: 200px; top: 53%; z-index: 1050;">
+        <img src="/images/cow-img.png" alt="cow-img" alt="cow-img" fetchpriority="high" style="height: 150px; width: 150px;">
+        <p class="mt-3 ms-3 mb-0 c-fs-f-srp-p">Cows: 0</p>
+        <button class="mt-2 btn btn-success text-nowrap fw-bold c-fs-f-srp-b" style="margin-left: 15px;" data-bs-toggle="modal" data-bs-target="#create-cow-record-modal" >+ Add Cow Record</button>
+      </div>
+
+      <!-- Pagination List container -->
+      <div id="pagination-container" class="ms-2 overflow-auto" style="height: 65px;"></div>
+
+      <div class="d-flex" id="cow-info-container">
+        <div class="d-flex flex-wrap gap-2 gap-lg-3 p-2 overflow-auto">
+          <p class="fs-5 m-0 me-2 c-fs-f-srp-p"><i class="fa-solid fa-cow text-primary d-none"></i> <span id="cow-name-and-breed"></span></p>
+          <p class="fs-5 m-0 me-2 c-fs-f-srp-p"><i class="fa-solid fa-cow text-danger d-none"></i> <span id="bull-name"></span></p>
+          <p class="fs-5 m-0 me-2 c-fs-f-srp-p d-none">Pending Amount: <i class="ms-1 fa-sharp fa-solid text-success fa-indian-rupee-sign"></i> <span id="pending-amount" class="text-success fw-bold"></span></p>
+        </div>
+      </div>
+
+      <!-- Injection info and ai dates table container -->
+      <div id="table-container" class="table-responsive px-2 m-0 overflow-auto c-max-h-f-srp-t position-relative">
+        <div id="doctor-img-container" class="position-absolute d-none start-50 translate-middle d-flex flex-column justify-content-center align-items-center" style="max-width: 200px; max-height: 200px; top: 47%;">
+          <img src="/images/doctor-img.png" alt="cow-img" style="max-height: 150px; max-width: 150px; margin-left: 20px;">
+          <p class="mt-1 mb-0 c-fs-f-srp-p" style="margin-left: -25px;">Injections: 0</p>
+          <button class="mt-2 btn btn-success fw-bold c-fs-f-srp-b" style="margin-left: -20px;" data-bs-toggle="modal" data-bs-target="#create-inject-info-and-ai-date-modal">+ Add Injection Record</button>
+        </div>
+      </div>
+      <hr class="m-0 border border-1 border-dark c-d-none">
+
+      <div class="d-flex px-1 py-2 gap-2 gap-sm-3 mt-1 flex-wrap">
+        <div class="btn-group dropdown dropup c-w-f-srp-b">
+          <button class="btn btn-primary dropdown-toggle ms-0 p-2 fw-bold c-fs-f-srp-b" data-bs-toggle="dropdown" >Actions For User </button>
+          <ul class="dropdown-menu" style="width: 100%; min-width: 0px;">
+            <li class="ms-4 mb-2 text-success c-fs-f-srp-p m-0 cursor-pointer" style="width: 90%;" data-bs-toggle="modal" data-bs-target="#update-user-record-modal">Edit</li>
+            <li class="ms-4 mb-2 text-danger c-fs-f-srp-p m-0 cursor-pointer" style="width: 90%;" data-bs-toggle="modal" data-bs-target="#delete-user-record-modal">Delete</li>
+          </ul>
+        </div>
+
+        <div id="cow-action-btn-container" class="btn-group dropdown dropup d-none c-w-f-srp-b">
+          <button class="btn btn-primary dropdown-toggle ms-0 p-2 fw-bold c-fs-f-srp-b" data-bs-toggle="dropdown" >Actions For Cow </button>
+          <ul class="dropdown-menu" style="width: 100%; min-width: 0px;">
+            <li class="ms-4 mb-2 text-success c-fs-f-srp-p m-0 cursor-pointer" style="width: 90%;" data-bs-toggle="modal" data-bs-target="#create-cow-record-modal">Add</li>
+            <li class="ms-4 mb-2 text-success c-fs-f-srp-p m-0 cursor-pointer" style="width: 90%;" data-bs-toggle="modal" data-bs-target="#update-cow-record-modal">Edit</li>
+            <li class="ms-4 mb-2 text-danger c-fs-f-srp-p m-0 cursor-pointer" style="width: 90%;" data-bs-toggle="modal" data-bs-target="#delete-cow-record-modal">Delete</li>
+          </ul>
+        </div>  
+    </div>
+
+    <!-- Update user record modal -->
+    <div id="update-user-record-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 300px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Update User Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <form id="update-user-record-form" class="mx-2">
+            <div class="d-flex flex-column mt-3 mb-3" style="height: 60px;">
+              <input id="name" type="text" class="form-control form-control-lg border-2" placeholder="Name ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 2px;"></div>
+            </div>  
+            
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="phone-number" type="text" class="form-control form-control-lg border-2" placeholder="Phone Number ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 2px;"></div>
+            </div> 
+  
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="address" type="text" class="form-control form-control-lg border-2" placeholder="Address ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 2px;"></div>
+            </div> 
+            
+            <div class="d-flex gap-2 mt-4 flex-wrap">
+              <button id="update-btn" type="button" class="btn border-success btn-hover-success text-success p-2 fw-bold c-w-f-srp-b">Update</button>
+              <button type="button" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b" data-bs-dismiss="modal">Go Back</button>  
+            </div>
+
+            <p id="message-element" class="fw-bold text-success mt-3 mb-1"></p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+     <!-- Update cow record modal -->
+     <div id="update-cow-record-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 300px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Update Cow Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <form id="update-cow-record-form" class="mx-2">
+            <div class="d-flex flex-column mt-3 mb-3" style="height: 60px;">
+              <input id="name" type="text" class="form-control form-control-lg border-2" autofocus placeholder="Cow Name ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 3px;"></div>
+            </div>  
+            
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="breed" type="text" class="form-control form-control-lg border-2" placeholder="Breed ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 3px;"></div>
+            </div> 
+  
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="bull-name" type="text" class="form-control form-control-lg border-2" placeholder="Bull Name ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold c-fs-f-err-message" style="padding-top: 3px;"></div>
+            </div> 
+            
+            <div class="d-flex gap-2 mt-4 flex-wrap">
+              <button id="update-btn" type="button" class="btn border-success btn-hover-success text-success p-2 fw-bold c-w-f-srp-b">Update</button>
+              <button type="button" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b" data-bs-dismiss="modal">Go Back</button>  
+            </div>
+            
+            <p id="message-element" class="fw-bold text-success mt-3 mb-1"></p>
+          </form>
+        </div>
+      </div>
+    </div>   
+
+     <!-- Update injection info and ai date record modal -->
+     <div id="update-inject-info-and-ai-date-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 300px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Update Injection Information</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <form id="update-inject-info-and-ai-date-form" class="mx-2">
+            <div class="d-flex flex-column mt-3 mb-3" style="height: 60px;">
+              <input id="name" type="text" class="form-control form-control-lg border-2" placeholder="Injection name ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div>  
+            
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="inject-price" type="text" class="form-control form-control-lg border-2" placeholder="Injection price ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+  
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="given-amount" type="text" class="form-control form-control-lg border-2" placeholder="Given Amount ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="pending-amount" type="text" class="form-control form-control-lg border-2" placeholder="Pending Amount ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="date" type="date" class="form-control form-control-lg border-2" placeholder="Date ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+            
+            <div class="d-flex gap-2 flex-wrap">
+              <button id="update-btn" type="button" class="btn border-success btn-hover-success text-success p-2 fw-bold c-w-f-srp-b">Update</button>
+              <button type="button" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b" data-bs-dismiss="modal">Go Back</button>  
+            </div>
+            
+            <p id="message-element" class="fw-bold text-success mt-2 mb-0"></p>
+          </form>
+        </div>
+      </div>
+    </div>   
+
+     <!-- Delete user record modal -->
+     <div id="delete-user-record-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <svg id="danger-icon" xmlns="http://www.w3.org/2000/svg" class="ms-2" width="24" height="24" fill="red" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+              <symbol id="check-circle-fill" fill="green" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+              </symbol>
+            </svg>
+            <svg id="success-icon" class="bi flex-shrink-0 ms-2 d-none" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Delete Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+          <div id="main-content" class="text-secondary fs-5 p-2 m-0" style="min-height: 90px !important;">Are you sure you want to delete this user record? This action cannot be undone and will permanently remove the entire record.</div>
+          <div class="d-flex gap-2 me-2 flex-wrap justify-content-end">
+            <p id="ok-element" class="text-danger m-0 p-2 c-fs-f-srp-p cursor-pointer">Ok</p>
+            <p class="text-success m-0 p-2 c-fs-f-srp-p cursor-pointer" data-bs-dismiss="modal">Cancel</p>  
+
+            <div id="spinner" class="d-flex p-2 d-none align-items-center justify-content-center gap-2">
+              <p class="c-fs-f-srp-p m-0 text-danger">Deleting </p>
+              <div class="spinner-border text-danger" role="status" style="height: 20px; width: 20px; border-width: 2px;"></div>
+            </div>           
+          </div>
+        </div>
+      </div>
+    </div>   
+
+     <!-- Delete cow record modal -->
+     <div id="delete-cow-record-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 50px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <svg id="danger-icon" xmlns="http://www.w3.org/2000/svg" class="ms-2" width="24" height="24" fill="red" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+              <symbol id="check-circle-fill" fill="green" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+              </symbol>
+            </svg>
+            <svg id="success-icon" class="bi flex-shrink-0 ms-2 d-none" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Delete Cow Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+          <p id="main-content" class="text-secondary fs-5 p-2 m-0">Are you sure you want to delete this cow record, including the injection information and AI (Artificial Insemination) dates?</p>
+
+          <from autocomplete="off" class="form-check ms-2 d-flex align-items-center gap-2 p-0">
+            <input class="form-check-input m-0 border border-2" type="checkbox" value="false" id="checkbox" style="height: 20px; width: 20px;">
+            <label class="form-check-label fs-5 text-secondary" for="checkbox">Delete All</label>
+          </from>
+
+          <div class="d-flex gap-2 me-2 flex-wrap justify-content-end">
+            <p id="ok-element" class="text-danger m-0 p-2 c-fs-f-srp-p cursor-pointer">Ok</p>
+            <p class="text-success m-0 p-2 c-fs-f-srp-p cursor-pointer" data-bs-dismiss="modal">Cancel</p>  
+
+            <div id="spinner" class="d-flex p-2 d-none align-items-center justify-content-center gap-2">
+              <p class="c-fs-f-srp-p m-0 text-danger">Deleting </p>
+              <div class="spinner-border text-danger" role="status" style="height: 20px; width: 20px; border-width: 2px;"></div>
+            </div>            
+          </div>
+        </div>
+      </div>
+    </div>  
+
+     <!-- Delete inject info and ai date record modal -->
+     <div id="delete-inject-info-and-ai-date-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 50px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <svg id="danger-icon" xmlns="http://www.w3.org/2000/svg" class="ms-2" width="24" height="24" fill="red" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:">
+              <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+            </svg>
+            
+            <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+              <symbol id="check-circle-fill" fill="green" viewBox="0 0 16 16">
+                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+              </symbol>
+            </svg>
+            <svg id="success-icon" class="bi flex-shrink-0 ms-2 d-none" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
+
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Delete Injection Information</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <p id="main-content" class="text-secondary fs-5 p-2 m-0">Are you sure you want to delete this injection info and ai date record?.</p>
+
+          <form autocomplete="off" class="form-check ms-2 d-flex align-items-center gap-2 p-0">
+            <input class="form-check-input m-0 border border-2" type="checkbox" id="checkbox" style="height: 20px; width: 20px;">
+            <label class="form-check-label fs-5 text-secondary" for="checkbox">Delete All</label>
+          </form>
+          
+          <div class="d-flex gap-2 me-2 flex-wrap justify-content-end">
+            <p id="ok-element" class="text-danger m-0 p-2 c-fs-f-srp-p cursor-pointer">Ok</p>
+            <p class="text-success m-0 p-2 c-fs-f-srp-p cursor-pointer" data-bs-dismiss="modal">Cancel</p>  
+
+            <div id="spinner" class="d-flex p-2 d-none align-items-center justify-content-center gap-2">
+              <p class="c-fs-f-srp-p m-0 text-danger">Deleting </p>
+              <div class="spinner-border text-danger" role="status" style="height: 20px; width: 20px; border-width: 2px;"></div>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>  
+
+     <!-- Create cow record modal -->
+     <div id="create-cow-record-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered c-w-f-srp-ccm">
+        <div class="modal-content rounded ms-0 mt-5 mx-2" style="max-height: 600px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h3 class="c-fs-f-srp-h text-center m-0 mt-2 w-100 modal-title">Cow Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <div class="w-100 mb-0 overflow-auto px-3" style="max-height: 600px;">
+            <form class="d-flex flex-column justify-content-evenly">
+              <div class="d-flex flex-column mt-3 mb-3" style="height: 60px;">
+                <input id="name" type="text" class="form-control form-control-lg border-2" placeholder="Cow name ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div>  
+              
+              <div class="d-flex flex-column mb-3" style="height: 60px;">
+                <input id="breed" type="text" class="form-control form-control-lg border-2" placeholder="Breed ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+    
+              <div class="d-flex flex-column mb-3" style="height: 60px;">
+                <input id="bull-name" type="text" class="form-control form-control-lg border-2" placeholder="Bull name ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+
+              <div class="d-flex flex-column mb-3" style="height: 60px;">
+                <input id="inject-name" type="text" class="form-control form-control-lg border-2" placeholder="Injection name ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+
+              <div class="d-flex flex-column  mb-3" style="height: 60px;">
+                <input id="inject-price" type="text" class="form-control form-control-lg border-2" placeholder="Injection price ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div>  
+              
+              <div class="d-flex flex-column mb-3" style="height: 60px;">
+                <input id="given-amount" type="text" class="form-control form-control-lg border-2" placeholder="Given amount ....">
+                <div id="err-message-element"  class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+    
+              <div class="d-flex flex-column mb-3" style="height: 60px;">
+                <input id="pending-amount" type="text" class="form-control form-control-lg border-2" placeholder="Pending amount ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+
+              <div class="d-flex flex-column mb-3 position-relative" style="height: 60px;">
+                <input id="date" type="date" class="form-control form-control-lg border-2" placeholder="Date ....">
+                <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+              </div> 
+            </form>
+          </div>
+            
+          <div class="d-flex gap-2 mt-3 flex-wrap px-3">
+            <button id="create-btn" type="button" class="btn border-success btn-hover-success text-success p-2 fw-bold c-w-f-srp-b">Create</button>
+            <button type="button" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b" data-bs-dismiss="modal">Go Back</button>  
+          </div>
+          
+          <p id="message-element" class="fw-bold text-success ms-3 mb-2 mt-2 mb-1"></p>
+        </div>
+      </div>
+    </div>   
+
+    <!-- Create new inject info and ai date modal -->
+    <div id="create-inject-info-and-ai-date-modal" class="modal fade shadow">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded mx-2 p-2" style="min-height: 300px;">
+          <div class="d-flex justify-content-between align-items-center w-100">
+            <h3 class="c-fs-f-srp-h text-center m-0 w-100 modal-title">Injection Record</h3>
+            <button type="button" style="width: 30px;" class="btn-close" data-bs-dismiss="modal"></button>  
+          </div>  
+
+          <form id="update-inject-info-and-ai-date-form" class="mx-2">
+            <div class="d-flex flex-column mt-3 mb-3" style="height: 60px;">
+              <input id="inject-name" type="text" class="form-control form-control-lg border-2" placeholder="Injection name ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div>  
+            
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="inject-price" type="text" class="form-control form-control-lg border-2" placeholder="Injection price ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+  
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="given-amount" type="text" class="form-control form-control-lg border-2" placeholder="Given Amount ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="pending-amount" type="text" class="form-control form-control-lg border-2" placeholder="Pending Amount ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+
+            <div class="d-flex flex-column mb-3" style="height: 60px;">
+              <input id="date" type="date"  class="form-control form-control-lg border-2" placeholder="Date ....">
+              <div id="err-message-element" class="invalid-feedback mt-0 fw-bold"></div>
+            </div> 
+            
+            <div class="d-flex gap-2 flex-wrap">
+              <button id="create-btn" type="button" class="btn border-success btn-hover-success text-success p-2 fw-bold c-w-f-srp-b">Create</button>
+              <button type="button" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b" data-bs-dismiss="modal">Go Back</button>  
+              <button id="reset-btn" type="reset" class="btn border-danger btn-hover-danger text-danger p-2 fw-bold c-w-f-srp-b">Reset</button>  
+            </div>
+            
+            <p id="message-element" class="fw-bold text-success mt-2 mb-0"></p>
+          </form>
+        </div>
+      </div>
+    </div>   
+
+  </div>
+  <script src="/js/record.js" type="module"></script>
+</body>
+</html>
